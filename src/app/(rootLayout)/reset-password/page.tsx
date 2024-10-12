@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useSearchParams } from "next/navigation";
+import { useUserResetPassword } from "@/hooks/auth";
 
 interface FormValues {
   email: string;

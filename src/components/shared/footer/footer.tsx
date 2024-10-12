@@ -50,10 +50,10 @@ import logo from '../../../../public/logo.png'
             </li>
             <li>
               <Link
-                href="/booking"
+                href="/"
                 className="text-white font-semibold hover:text-sky-400"
               >
-                Booking
+                NewsFeed
               </Link>
             </li>
             <li>

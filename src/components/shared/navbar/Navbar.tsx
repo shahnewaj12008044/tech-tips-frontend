@@ -9,6 +9,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useState } from "react";
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
+
 import {
   Home,
   Car,
@@ -30,17 +31,22 @@ import {
   User,
   LogOut,
   LayoutDashboardIcon,
+  NewspaperIcon,
+  Plus,
 } from "lucide-react";
 import { Cross as Hamburger } from "hamburger-react";
 import { useUser } from "@/context/user-provider";
 import { logoutUser } from "@/services/auth-services";
 import { protectedRoutes } from "@/utils/constant";
+import PostModal from "@/components/post-modal";
+import Image from "next/image";
 
 
 const Navbar = () => {
   const pathname = usePathname();
   const { user, setIsLoading } = useUser();
   const [isOpen, setIsOpen] = useState(false);
+  const [isPostModalOpen, setPostModalOpen] = useState(false); 
   const router = useRouter();
 
   const handleLogout = () => {
@@ -56,16 +62,15 @@ const Navbar = () => {
   const avatarFallback = user?.name.charAt(0).toUpperCase();
 
   const routes = [
-    { path: "/", name: "Home", icon: <Home className="w-4 h-4 mr-2" /> },
+    {
+      path: "/",
+      name: "News Feed",
+      icon: <NewspaperIcon className="w-4 h-4 mr-2" />,
+    },
     {
       path: "/about",
       name: "About Us",
       icon: <Info className="w-4 h-4 mr-2" />,
-    },
-    {
-      path: "/booking",
-      name: "Booking",
-      icon: <Calendar className="w-4 h-4 mr-2" />,
     },
     {
       path: "/contact-us",
@@ -80,14 +85,14 @@ const Navbar = () => {
         {/* Logo */}
         <Link href="/">
           <div className="flex text-center items-center">
-            <p className="font-bold text-muted-foreground text-white text-3xl ml-8 border-2 px-4 py-2 rounded-md hover:bg-gradient">
+            <p className="font-bold text-muted-foreground text-white text-3xl border-2 px-4 py-2 rounded-md hover:bg-gradient w-[250px]">
               Tech <span className="text-orange-500">Tips</span>
             </p>
           </div>
         </Link>
 
         {/* Mobile device menus */}
-        <div className="block lg:hidden ">
+        <div className="block md:hidden ">
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button className="text-xl font-medium  p-0">
@@ -117,6 +122,14 @@ const Navbar = () => {
                     </SheetClose>
                   ))}
                 </div>
+                {user?.email && (
+                <Button
+                  onClick={() => setPostModalOpen(true)}
+                  className="bg-transparent rounded-full hover:bg-black/40  text-black"
+                >
+                  <Plus className="w-6 h-6 mr-1" /> Create Post
+                </Button>
+              )}
               </SheetHeader>
               <SheetFooter className="w-full">
                 {!user?.email ? (
@@ -163,7 +176,7 @@ const Navbar = () => {
         </div>
 
         {/* Navigation menu for large screens */}
-        <div className="lg:flex items-center gap-8 hidden">
+        <div className="hidden md:flex w-full justify-center items-center gap-12">
           {routes.map((route) => (
             <Link key={route.path} href={route.path}>
               <p
@@ -178,7 +191,20 @@ const Navbar = () => {
               </p>
             </Link>
           ))}
+          </div>
 
+            {/* New Post button for large screens */}
+        <div className="hidden md:flex items-center mr-2">
+          {user?.email && (
+            <Button
+              onClick={() => setPostModalOpen(true)}
+              className="bg-transparent rounded-full hover:bg-black/40  text-white"
+            >
+              <Plus className="w-6 h-6 mr-1" /> Create Post
+            </Button>
+          )}
+        </div>
+        <div className="hidden md:flex items-center ml-auto">
           {!user?.email ? (
             <Link href="/login">
               <Button className="btn-primary ">LOGIN</Button>
@@ -209,8 +235,14 @@ const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-        </div>
+        
       </div>
+    </div>
+      {/* Post Modal */}
+      <PostModal
+        isOpen={isPostModalOpen}
+        onClose={() => setPostModalOpen(false)}
+      />
     </div>
   );
 };
