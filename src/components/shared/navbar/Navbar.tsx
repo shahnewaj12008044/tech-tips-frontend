@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useState } from 'react';
-import { Home, Car, Info, Calendar, Phone, User, LogOut } from 'lucide-react';
+import { Home, Car, Info, Calendar, Phone, User, LogOut, LayoutDashboardIcon } from 'lucide-react';
 import { Cross as Hamburger } from 'hamburger-react';
 import { useUser } from '@/context/user-provider';
 import { logoutUser } from '@/services/auth-services';
@@ -105,6 +105,10 @@ const Navbar = () => {
                     <DropdownMenuContent>
                       <DropdownMenuItem>
                         <User className="w-4 h-4 mr-2" />
+                        <Link href={'/profile'}>Profile</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <LayoutDashboardIcon className="w-4 h-4 mr-2" />
                         <Link href={`/${user.role}`}>Dashboard</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={handleLogout}>
@@ -153,7 +157,12 @@ const Navbar = () => {
               <DropdownMenuContent>
                 <DropdownMenuItem>
                   <User className="w-4 h-4 mr-2" />
-                  <Link href={`/${user.role}`}>Dashboard</Link>
+                  <Link href='/profile'>Profile</Link>
+                 
+                 </DropdownMenuItem>
+                 <DropdownMenuItem>
+                   <LayoutDashboardIcon className="w-4 h-4 mr-2" />
+                 <Link href={`/${user.role}`}>Dashboard</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="w-4 h-4 mr-2" />
