@@ -126,3 +126,13 @@ body {
   scrollbar-color: #dcdcdc #f8f8f8;
   
 }
+@layer utilities {
+  .bg-gradient {
+    @apply bg-gradient-to-r from-blue-950 to-gray-100;
+  }
+}
+@layer utilities {
+  .btn-primary {
+    @apply bg-[#ed6b09] text-[#020C29] font-bold  md:text-xl hover:bg-[#020C29] hover:border hover:border-white  hover:text-[#ed6b09] transition-colors duration-300 !important;
+  }
+}

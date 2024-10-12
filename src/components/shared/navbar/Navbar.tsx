@@ -42,7 +42,7 @@ const Navbar = () => {
 
   const routes = [
     { path: '/', name: 'Home', icon: <Home className="w-4 h-4 mr-2" /> },
-    { path: '/about-us', name: 'About Us', icon: <Info className="w-4 h-4 mr-2" /> },
+    { path: '/about', name: 'About Us', icon: <Info className="w-4 h-4 mr-2" /> },
     { path: '/booking', name: 'Booking', icon: <Calendar className="w-4 h-4 mr-2" /> },
     { path: '/contact-us', name: 'Contact', icon: <Phone className="w-4 h-4 mr-2" /> },
   ];
@@ -53,8 +53,8 @@ const Navbar = () => {
         {/* Logo */}
         <Link href="/">
           <div className="flex text-center items-center">
-            <p className="font-bold text-muted-foreground text-white text-3xl">
-              Tech <span className="text-orange-500">Hub</span>
+            <p className="font-bold text-muted-foreground text-white text-3xl ml-8 border-2 px-4 py-2 rounded-md hover:bg-gradient">
+              Tech <span className="text-orange-500">Tips</span>
             </p>
           </div>
         </Link>
@@ -138,7 +138,7 @@ const Navbar = () => {
 
           {!user?.email ? (
             <Link href="/login">
-              <Button className="bg-orange-500 text-white font-bold text-xl px-3">
+              <Button className="btn-primary ">
                 LOGIN
               </Button>
             </Link>

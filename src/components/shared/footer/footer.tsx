@@ -86,7 +86,7 @@ import logo from '../../../../public/logo.png'
               })}
             </div>
           </div>
-          <p className="mt-auto text-center">all rights are reserved by @car Renters.com</p>
+          <p className="mt-auto text-center">all rights are reserved by @Tech Tips.com</p>
         </div>
       </div>
     );
