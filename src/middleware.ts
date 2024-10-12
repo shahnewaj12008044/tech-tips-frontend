@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "./services/auth-services";
 type Role = keyof typeof roleBasedPrivateRoutes;
 const authRoutes = ["/login", "/register"];
+const privateRoute = ["/profile"];
 const roleBasedPrivateRoutes = {
   user: [/^\/dashboard\/user/],
   admin: [/^\/dashboard\/admin/],
@@ -18,7 +19,10 @@ export async function middleware(request: NextRequest) {
       );
     }
   }
-  if (user.role && roleBasedPrivateRoutes[user.role as Role]) {
+  if (user && privateRoute.includes(pathname)) {
+    return NextResponse.next();
+  }
+  if (user?.role && roleBasedPrivateRoutes[user.role as Role]) {
     const routes = roleBasedPrivateRoutes[user?.role as Role];
     if (routes.some((route) => pathname.match(route))) {
       return NextResponse.next();
@@ -27,5 +31,5 @@ export async function middleware(request: NextRequest) {
   return NextResponse.redirect(new URL("/", request.url));
 }
 export const config = {
-  matcher: ["/login", "/register", "/dashboard/:page*"],
+  matcher: ["/profile", "/login", "/register", "/dashboard/:page*"],
 }

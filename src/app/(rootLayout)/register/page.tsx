@@ -1,4 +1,3 @@
-
 "use client";
 import { Button } from "@/components/ui/button";
 import {
@@ -196,7 +195,9 @@ const RegisterPage = () => {
 
             <div className="flex flex-col gap-y-2.5">
               <Button
-                onClick={() => {signIn("google", { callbackUrl: "/" })}}
+                onClick={() => {
+                  signIn("google", { callbackUrl: "/" });
+                }}
                 variant="outline"
                 size="lg"
                 className="w-full relative"
@@ -220,7 +221,7 @@ const RegisterPage = () => {
             <p className="text-xs text-center text-muted-foreground">
               Already have an account?{" "}
               <Link
-                href={'/login'}
+                href={"/login"}
                 className="text-sky-700 hover:underline cursor-pointer"
               >
                 Login

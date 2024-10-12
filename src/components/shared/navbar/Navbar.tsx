@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Sheet,
@@ -8,43 +8,70 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
+} from "@/components/ui/sheet";
 
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { usePathname } from 'next/navigation';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { usePathname, useRouter } from "next/navigation";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { useState } from 'react';
-import { Home, Car, Info, Calendar, Phone, User, LogOut, LayoutDashboardIcon } from 'lucide-react';
-import { Cross as Hamburger } from 'hamburger-react';
-import { useUser } from '@/context/user-provider';
-import { logoutUser } from '@/services/auth-services';
+} from "@/components/ui/dropdown-menu";
+import { useState } from "react";
+import {
+  Home,
+  Car,
+  Info,
+  Calendar,
+  Phone,
+  User,
+  LogOut,
+  LayoutDashboardIcon,
+} from "lucide-react";
+import { Cross as Hamburger } from "hamburger-react";
+import { useUser } from "@/context/user-provider";
+import { logoutUser } from "@/services/auth-services";
+import { protectedRoutes } from "@/utils/constant";
+
 
 const Navbar = () => {
   const pathname = usePathname();
   const { user, setIsLoading } = useUser();
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   const handleLogout = () => {
     logoutUser();
     setIsLoading(true);
+    if (protectedRoutes.some((route) => pathname.match(route))) {
+      router.push("/");
+    }
   };
 
   console.log(user);
   // Ensure user?.name exists before using it for the avatar fallback
-  const avatarFallback = user?.name.charAt(0).toUpperCase() 
+  const avatarFallback = user?.name.charAt(0).toUpperCase();
 
   const routes = [
-    { path: '/', name: 'Home', icon: <Home className="w-4 h-4 mr-2" /> },
-    { path: '/about', name: 'About Us', icon: <Info className="w-4 h-4 mr-2" /> },
-    { path: '/booking', name: 'Booking', icon: <Calendar className="w-4 h-4 mr-2" /> },
-    { path: '/contact-us', name: 'Contact', icon: <Phone className="w-4 h-4 mr-2" /> },
+    { path: "/", name: "Home", icon: <Home className="w-4 h-4 mr-2" /> },
+    {
+      path: "/about",
+      name: "About Us",
+      icon: <Info className="w-4 h-4 mr-2" />,
+    },
+    {
+      path: "/booking",
+      name: "Booking",
+      icon: <Calendar className="w-4 h-4 mr-2" />,
+    },
+    {
+      path: "/contact-us",
+      name: "Contact",
+      icon: <Phone className="w-4 h-4 mr-2" />,
+    },
   ];
 
   return (
@@ -64,7 +91,11 @@ const Navbar = () => {
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button className="text-xl font-medium  p-0">
-                <Hamburger toggled={isOpen} toggle={setIsOpen} color="#FEA633" />
+                <Hamburger
+                  toggled={isOpen}
+                  toggle={setIsOpen}
+                  color="#FEA633"
+                />
               </Button>
             </SheetTrigger>
             <SheetContent className="flex flex-col justify-between items-center bg-sky-950">
@@ -76,7 +107,7 @@ const Navbar = () => {
                       <Link href={route.path}>
                         <p
                           className={`flex items-center font-medium text-white hover:text-orange-700 uppercase p-2 border-b ${
-                            pathname === route.path ? 'text-orange-800' : ''
+                            pathname === route.path ? "text-orange-800" : ""
                           }`}
                         >
                           {route.icon}
@@ -90,22 +121,30 @@ const Navbar = () => {
               <SheetFooter className="w-full">
                 {!user?.email ? (
                   <Link href="/login" className="w-full">
-                    <Button className="w-full mt-2 cursor-pointer bg-[#FEA633] text-white font-bold text-2xl">
+                    <Button className="w-full mt-2 cursor-pointer btn-primary">
                       <span className="relative z-10">LOGIN →</span>
                     </Button>
                   </Link>
                 ) : (
                   <DropdownMenu>
-                    <DropdownMenuTrigger className="outline-none relative" asChild>
+                    <DropdownMenuTrigger
+                      className="outline-none relative"
+                      asChild
+                    >
                       <Avatar className="cursor-pointer rounded-md size-10 hover:opacity-75 transition mx-auto">
-                        <AvatarImage src={user?.profilePhoto} alt="User Avatar" />
-                        <AvatarFallback className="bg-sky-500 text-white rounded-md">{avatarFallback}</AvatarFallback>
+                        <AvatarImage
+                          src={user?.profilePhoto}
+                          alt="User Avatar"
+                        />
+                        <AvatarFallback className="bg-sky-500 text-white rounded-md">
+                          {avatarFallback}
+                        </AvatarFallback>
                       </Avatar>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuItem>
                         <User className="w-4 h-4 mr-2" />
-                        <Link href={'/profile'}>Profile</Link>
+                        <Link href={"/profile"}>Profile</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem>
                         <LayoutDashboardIcon className="w-4 h-4 mr-2" />
@@ -130,8 +169,8 @@ const Navbar = () => {
               <p
                 className={`flex items-center font-medium uppercase ${
                   pathname === route.path
-                    ? 'text-orange-500'
-                    : 'text-white hover:text-orange-500'
+                    ? "text-orange-500"
+                    : "text-white hover:text-orange-500"
                 }`}
               >
                 {route.icon}
@@ -142,27 +181,26 @@ const Navbar = () => {
 
           {!user?.email ? (
             <Link href="/login">
-              <Button className="btn-primary ">
-                LOGIN
-              </Button>
+              <Button className="btn-primary ">LOGIN</Button>
             </Link>
           ) : (
             <DropdownMenu>
               <DropdownMenuTrigger className="outline-none relative" asChild>
                 <Avatar className="cursor-pointer rounded-md size-10 hover:opacity-75 transition mx-auto">
                   <AvatarImage src={user?.profilePhoto} alt="User Avatar" />
-                  <AvatarFallback className="bg-sky-500 text-white rounded-md">{avatarFallback}</AvatarFallback>
+                  <AvatarFallback className="bg-sky-500 text-white rounded-md">
+                    {avatarFallback}
+                  </AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem>
                   <User className="w-4 h-4 mr-2" />
-                  <Link href='/profile'>Profile</Link>
-                 
-                 </DropdownMenuItem>
-                 <DropdownMenuItem>
-                   <LayoutDashboardIcon className="w-4 h-4 mr-2" />
-                 <Link href={`/${user.role}`}>Dashboard</Link>
+                  <Link href="/profile">Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <LayoutDashboardIcon className="w-4 h-4 mr-2" />
+                  <Link href={`/${user.role}`}>Dashboard</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="w-4 h-4 mr-2" />

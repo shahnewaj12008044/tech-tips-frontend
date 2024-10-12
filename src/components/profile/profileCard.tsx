@@ -1,7 +1,7 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUser } from "@/context/user-provider";
 import { Loader } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Dialog,
   DialogContent,
@@ -16,7 +16,7 @@ const ProfileCard = () => {
   const { user, isLoading } = useUser();
   const [followerCount, setFollowerCount] = useState(10);
   const [followingCount, setFollowingCount] = useState(100);
-  // States to handle form data
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [imagePreview, setImagePreview] = useState("");
@@ -24,7 +24,7 @@ const ProfileCard = () => {
     if (user) {
       setName(user.name || "");
       setEmail(user.email || "");
-      setImagePreview(user.profilePhoto || "");
+      setImagePreview(user.profilePhoto || ""); 
     }
   }, [user]);
   if (isLoading)
@@ -53,9 +53,10 @@ const ProfileCard = () => {
         <div className="flex flex-col sm:flex-row items-center mb-4 md:mb-0 w-full sm:w-auto">
           <Avatar className="w-28 h-28">
             <AvatarImage
-              src={user?.profilePhoto || ""}
+              src={user?.profilePhoto || ""} 
               alt="User Avatar"
-              className="rounded-full border-4 border-white cursor-pointer"
+              className="rounded-full border-4 border-white cursor-pointer" 
+             
             />
             <AvatarFallback className="bg-sky-500 text-white rounded-full">
               {avatarFallback}
@@ -96,10 +97,8 @@ const ProfileCard = () => {
                     width={124}
                     height={124}
                     alt="Image Preview"
-                    className="w-56 h-56 rounded-full border mt-2 cursor-pointer"
-                    onClick={() =>
-                      document.getElementById("fileInput")?.click()
-                    }
+                    className="w-56 h-56 rounded-full border mt-2 cursor-pointer" 
+                    onClick={() => document.getElementById("fileInput")?.click()} 
                   />
                 </div>
                 {/* Hidden file input for image upload */}
