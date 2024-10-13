@@ -87,7 +87,7 @@ export const useUpdateUser = () => {
       queryClient.invalidateQueries({
         queryKey: ["GET_ALL_USER"],
       });
-      toast.success("User updated successfully.");
+
     },
     onError: (error) => {
       toast.error(error.message);
@@ -103,7 +103,7 @@ export const useDeleteUser = () => {
       queryClient.invalidateQueries({
         queryKey: ["GET_ALL_USER"],
       });
-      toast.success("User deleted successfully.");
+    
     },
     onError: (error) => {
       toast.error(error.message);

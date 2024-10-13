@@ -36,17 +36,18 @@ const Sidebar = () => {
       path: "/admin/admin",
     },
     {
+      name: "Manage Posts",
+      path: "manage-posts",
+    },
+    {
       name: "Manage Users",
       path: "/admin/manage-users",
     },
     {
-      name: "Manage Bookings",
-      path: "manage-bookings",
-    },
-    // {
-    //   name: "User Management",
-    //   path: "manage-users",
-    // },
+      name: "Manage Admin",
+      path: "/admin/manage-admin",
+    }
+  
   ];
 
   const userRoutes = [
