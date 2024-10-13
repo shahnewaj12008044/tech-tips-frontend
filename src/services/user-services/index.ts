@@ -18,3 +18,48 @@ export const updateProfile = async (email: string, userData: string) => {
     throw new Error(error.response?.data?.message || error.message);
   }
 };
+
+interface UserId {
+  userId: string; 
+}
+
+//create follow
+export const createFollow = async ({
+  userId,
+  targetId, 
+}: {
+  userId: string;
+  targetId: string;
+}) => {
+  try {
+    const { data } = await axiosInstance.post("/users/follow", {
+      userId,
+      targetId, 
+    });
+    console.log(data);
+    return data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
+
+
+// this is for unfollow
+export const createUnfollow = async ({
+  userId,
+  targetId,
+}: {
+  userId: string;
+  targetId: string;
+}) => {
+  try {
+    const { data } = await axiosInstance.post("/users/unfollow", {
+      userId,
+      targetId, 
+    });
+    console.log(data);
+    return data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};

@@ -1,20 +1,29 @@
 "use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"; // Import the input component from shadcn
 import { Thumbnail } from "@/components/thumbnail";
 import dynamic from "next/dynamic";
+
 import { useGetSinglePost } from "@/hooks/post-hook";
 import { useParams } from "next/navigation";
-import { useState, useRef } from "react";
+import { useState, useRef, use } from "react";
 import { IComment } from "@/types";
-
+import { useCreateComment, useGetComment } from "@/hooks/comment-hook";
 import { useUser } from "@/context/user-provider";
 import { formatDistanceToNow } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import Comment from "./comment";
-import { useCreateComment, useGetComment } from "@/hooks/comment-hook";
+import {
+  useGetMyProfile,
+  useUserFollow,
+  useUserUnfollow,
+} from "@/hooks/user-hook";
+import Loader from "@/components/Loader";
+
 const Renderer = dynamic(() => import("@/components/renderer"), { ssr: false });
+
 const PostDetails = () => {
   const [newComment, setNewComment] = useState("");
   const [isShareOpen, setIsShareOpen] = useState(false);
@@ -22,11 +31,26 @@ const PostDetails = () => {
   const params = useParams();
   const { user } = useUser();
   const { data: post, isLoading, isError } = useGetSinglePost(params.postId);
+  const { data: userData, refetch: refetchOnSuccess } = useGetMyProfile(user?.email);
   const postId = Array.isArray(params.postId)
     ? params.postId[0]
     : params.postId;
   const { data: Comments, refetch } = useGetComment(postId);
   const { mutate: createComment } = useCreateComment();
+
+  const authorUserId = post?.data?.authorId?._id;
+  const userIdforFollow = userData?.data?._id;
+  
+  // Check if the logged-in user is following the author
+  const isFollowing = userData?.data?.following?.some(
+    (followingUserId: { _id: string }) => followingUserId._id === authorUserId
+  );
+  
+  // Hooks for follow/unfollow
+  const followMutation = useUserFollow();
+  const unfollowMutation = useUserUnfollow();
+
+
 
   const handleCommentSubmit = () => {
     if (newComment.trim()) {
@@ -35,31 +59,32 @@ const PostDetails = () => {
         userId: user?._id,
         content: newComment,
       } as IComment;
+
       createComment(newCommentData, {
         onSuccess: () => {
           refetch();
           setNewComment("");
         },
-        onError: (error: any) => {
+        onError: (error) => {
           console.error("Error creating comment:", error);
         },
       });
     }
   };
+
   const handleCommentIconClick = () => {
     commentInputRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
   const toggleShareOptions = () => {
     setIsShareOpen((prev) => !prev);
   };
-  if (isLoading)
-    return <div className="text-center text-lg">Loading post...</div>;
-  if (isError)
-    return (
-      <div className="text-center text-lg text-red-600">
-        Error loading post. Please try again.
-      </div>
-    );
+
+  if (isLoading) return <Loader />;
+
+
+
+
   return (
     <div className="flex flex-col justify-center items-center p-4">
       <div className="bg-white rounded-lg shadow-lg max-w-4xl w-full p-6 space-y-6">
@@ -90,22 +115,61 @@ const PostDetails = () => {
               <Badge className="bg-red-500">{post.data.category}</Badge>
             </div>
           </div>
-          <Button className="bg-blue-500 text-white rounded-full hover:bg-blue-600">
-            Follow
+          {user?._id !== post.data.authorId._id && (
+            <Button
+            className="bg-blue-500 text-white rounded-full hover:bg-blue-600"
+            onClick={async () => {
+              try {
+               
+                if (isFollowing) {
+                  console.log('Unfollowing user:', authorUserId);
+                  unfollowMutation.mutate({
+                    userId: userIdforFollow.toString(),
+                    targetId: authorUserId.toString(),
+                  }, {
+                    onSuccess: () => {
+                      refetchOnSuccess();
+               
+                    },
+                  });
+                } else {
+                  console.log('Following user:', authorUserId);
+                  followMutation.mutate({
+                    userId: userIdforFollow.toString(),
+                    targetId: authorUserId.toString(),
+                  }, {
+                    onSuccess: () => {
+                      refetchOnSuccess();
+                    },
+                  });
+                }
+              } catch (error) {
+                console.error("Error toggling follow status:", error);
+              }
+            }}
+          >
+            {isFollowing ? "Unfollow" : "Follow"}
           </Button>
+          
+          
+          )}
         </div>
+
         {/* Post Title */}
         <h1 className="text-4xl font-semibold mb-4">{post.data.title}</h1>
+
         {/* Post Images */}
         <div className="grid gap-4 mb-6">
           {post.data.images?.map((imageUrl: string, index: number) => (
             <Thumbnail key={index} url={imageUrl} />
           ))}
         </div>
+
         {/* Post Content */}
         <div className="text-lg mb-6">
           <Renderer value={post.data.content} />
         </div>
+
         {/* Footer - Upvotes/Downvotes, Comments, Share */}
         <div className="flex justify-between items-center mt-6">
           <div className="flex items-center space-x-4 text-gray-500">
@@ -139,6 +203,7 @@ const PostDetails = () => {
                 </svg>
               </button>
             </div>
+
             {/* Comments */}
             <div
               className="flex items-center space-x-2 bg-gray-200 p-2 rounded-full hover:bg-gray-300 cursor-pointer"
@@ -158,22 +223,24 @@ const PostDetails = () => {
                 {Array.isArray(Comments.data) ? Comments.data.length : 0}
               </span>
             </div>
+
             {/* Share */}
             <div className="relative">
               <button
                 className="flex items-center space-x-2 bg-gray-200 p-2 rounded-full hover:bg-gray-300"
                 onClick={toggleShareOptions}
               >
-                <svg
+              <svg
+                  aria-hidden="true"
+                  className="icon-share"
+                  fill="currentColor"
+                  height="20"
+                  icon-name="share-new-outline"
+                  viewBox="0 0 20 20"
+                  width="20"
                   xmlns="http://www.w3.org/2000/svg"
-                  width="1.2rem"
-                  height="1.2rem"
-                  viewBox="0 0 24 24"
                 >
-                  <path
-                    fill="currentColor"
-                    d="M16 12a4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4 4 4 0 0 1 4 4zm4 0a8 8 0 0 1-8 8 8 8 0 0 1-8-8 8 8 0 0 1 8-8 8 8 0 0 1 8 8z"
-                  />
+                  <path d="m18.8 8.286-6.466-7.064a.759.759 0 0 0-1.295.537v3.277C5.623 5.365 1 9.918 1 15.082v2.907h1.274C2.516 15 5.81 12.62 9.834 12.62h1.205v3.226a.757.757 0 0 0 1.315.515l6.422-7.021A.756.756 0 0 0 19 8.8a.736.736 0 0 0-.2-.514Zm-6.508 6.3V12a.625.625 0 0 0-.625-.625H9.834A9.436 9.436 0 0 0 2.26 14.7c.228-4.536 4.525-8.435 9.4-8.435a.626.626 0 0 0 .625-.625V3.023L17.576 8.8l-5.284 5.786Zm5.586-6.107a.176.176 0 0 0-.023.024.171.171 0 0 1 .02-.028l.003.004Zm-.011.642a.53.53 0 0 0-.003-.004l.003.004Z"></path>
                 </svg>
                 <span>Share</span>
               </button>
@@ -195,6 +262,7 @@ const PostDetails = () => {
             </div>
           </div>
         </div>
+
         {/* Comments Section */}
         <div>
           <Comment
@@ -212,4 +280,5 @@ const PostDetails = () => {
     </div>
   );
 };
+
 export default PostDetails;
