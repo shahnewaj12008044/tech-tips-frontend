@@ -1,6 +1,7 @@
 import {
   getAllPayments,
   premiumPayment,
+  getMyPayments,
 } from "@/services/premium-payment-services";
 import { PremiumPayment } from "@/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -20,5 +21,12 @@ export const useGetAllPayments = () => {
   return useQuery({
     queryKey: ["GET_ALL_PAYMENTS"],
     queryFn: async () => await getAllPayments(),
+  });
+};
+
+export const useGetMyPayment = (userId: any) => {
+  return useQuery({
+    queryKey: ["GET_MY_PAYMENTS"],
+    queryFn: async () => await getMyPayments(userId),
   });
 };

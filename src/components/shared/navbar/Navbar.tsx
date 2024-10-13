@@ -173,7 +173,7 @@ const Navbar = () => {
                         ) : (
                           <div className="flex items-center">
                             <LayoutDashboardIcon className="w-4 h-4 mr-2" />
-                            <Link href={`/${user.role}/user`}>Dashboard</Link>
+                            <Link href={`/${user.role}/user-analytics`}>Dashboard</Link>
                           </div>
                         )}
                       </DropdownMenuItem>
@@ -270,7 +270,7 @@ const Navbar = () => {
                   ) : (
                     <div className="flex items-center">
                       <LayoutDashboardIcon className="w-4 h-4 mr-2" />
-                      <Link href={`/${user.role}/user`}>Dashboard</Link>
+                      <Link href={`/${user.role}/user-analytics`}>Dashboard</Link>
                     </div>
                   )}
                 </DropdownMenuItem>

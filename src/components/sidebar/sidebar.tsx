@@ -60,16 +60,16 @@ const Sidebar = () => {
 
   const userRoutes = [
     {
-      name: "User",
-      path: "/user/user",
+      name: "User Analytics",
+      path: "/user/user-analytics",
     },
     {
       name: "My Posts",
       path: "/user/my-posts",
     },
     {
-      name: "Payment Management",
-      path: "/user/payment-management",
+      name: "User Payment",
+      path: "/user/user-payment",
     },
   ];
 
