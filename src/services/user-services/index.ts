@@ -19,9 +19,6 @@ export const updateProfile = async (email: string, userData: string) => {
   }
 };
 
-interface UserId {
-  userId: string; 
-}
 
 //create follow
 export const createFollow = async ({

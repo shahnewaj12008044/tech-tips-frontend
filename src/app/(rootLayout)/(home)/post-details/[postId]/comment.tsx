@@ -83,29 +83,29 @@ const Comment = ({
       <h2 className="text-2xl font-semibold mb-4">Comments</h2>
       {/* Render comment section */}
       <div className="space-y-6">
-        {Comments.data.map((comment) => (
+        {Comments?.data?.map((comment) => (
           <div
-            key={comment._id}
+            key={comment?._id}
             className="flex space-x-4 bg-white p-4 rounded-lg shadow-md"
           >
             <Avatar className="w-12 h-12">
               <AvatarImage
-                src={comment.userId?.profilePhoto}
+                src={comment?.userId?.profilePhoto}
                 alt="comment-author"
               />
               <AvatarFallback className="bg-sky-500 text-white">
-                {comment.userId?.name.charAt(0).toUpperCase()}
+                {comment?.userId?.name.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1">
               <div className="flex justify-between items-center mb-2">
                 <div>
                   <p className="font-semibold text-lg">
-                    {comment.userId?.name}
+                    {comment?.userId?.name}
                   </p>
                   <p className="text-sm text-gray-400">
                     {formatDistanceToNow(
-                      new Date(comment.updatedAt || comment.createdAt),
+                      new Date(comment?.updatedAt || comment?.createdAt),
                       { addSuffix: true }
                     )}
                   </p>
@@ -114,14 +114,14 @@ const Comment = ({
                   <div className="flex space-x-3">
                     <button
                       onClick={() =>
-                        handleEditClick(comment._id, comment.content)
+                        handleEditClick(comment?._id, comment?.content)
                       }
                       className="text-blue-500 hover:text-blue-600"
                     >
                       <MdEdit size={20} />
                     </button>
                     <button
-                      onClick={() => handleDeleteComment(comment._id)}
+                      onClick={() => handleDeleteComment(comment?._id)}
                       className="text-red-500 hover:text-red-600"
                     >
                       <MdDelete size={20} />
@@ -129,7 +129,7 @@ const Comment = ({
                   </div>
                 )}
               </div>
-              {editCommentId === comment._id ? (
+              {editCommentId === comment?._id ? (
                 <div className="mt-2">
                   <Input
                     value={editContent}
@@ -138,7 +138,7 @@ const Comment = ({
                   />
                   <div className="flex justify-end space-x-2">
                     <Button
-                      onClick={() => handleEditSubmit(comment._id)}
+                      onClick={() => handleEditSubmit(comment?._id)}
                       className="bg-blue-500 text-white px-3 py-1 rounded"
                     >
                       <MdSend size={18} className="mr-1" /> Save
@@ -152,7 +152,7 @@ const Comment = ({
                   </div>
                 </div>
               ) : (
-                <p className="text-gray-800">{comment.content}</p>
+                <p className="text-gray-800">{comment?.content}</p>
               )}
             </div>
           </div>

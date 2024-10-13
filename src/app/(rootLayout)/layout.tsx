@@ -1,13 +1,21 @@
-import Footer from "@/components/shared/footer/footer"
-import Navbar from "@/components/shared/navbar/Navbar"
-import { ReactNode } from "react"
-const RootLayout = ({children}:{children: ReactNode}) => {
-    return (
-        <>
+import Loader from "@/components/Loader";
+import Navbar from "@/components/shared/navbar/Navbar";
+import { ReactNode, Suspense } from "react";
+const RootLayout = ({ children }: { children: ReactNode }) => {
+  return (
+    <>
+      <Suspense
+        fallback={
+          <div>
+            <Loader />{" "}
+          </div>
+        }
+      >
         <Navbar />
-      <div className="min-h-screen bg-slate-300">  {children}</div>
-        </>
-    )
-}
+      </Suspense>
+      {children}
+    </>
+  );
+};
 
-export default RootLayout
+export default RootLayout;

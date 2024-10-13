@@ -4,10 +4,14 @@ import {
   createPostUpvote,
   getAllPosts,
   getSinglePost,
+  getMyPost
 } from "@/services/post-services";
 import { IPost } from "@/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+
+
+
 export const useCreatePost = () => {
   return useMutation<any, Error, IPost>({
     mutationKey: ["CREATE_POST"],
@@ -21,12 +25,14 @@ export const useCreatePost = () => {
   });
 };
 
+
 export const useGetAllPosts = () => {
   return useQuery({
     queryKey: ["GET_ALL_POSTS"],
     queryFn: async () => await getAllPosts(),
   });
 };
+
 
 export const useGetSinglePost = (postId: any) => {
   return useQuery({
@@ -58,6 +64,8 @@ export const useCreateUpvote = () => {
     },
   });
 };
+
+
 export const useCreateDownvote = () => {
   return useMutation({
     mutationKey: ["CREATE_DOWNVOTE"],
@@ -78,5 +86,12 @@ export const useCreateDownvote = () => {
     onError: (error: any) => {
       toast.error(`Failed to downvote: ${error.message}`);
     },
+  });
+};
+
+export const useGetMyPost = (email: any) => {
+  return useQuery({
+    queryKey: ["GET_MY_POST", email],
+    queryFn: async () => await getMyPost(email),
   });
 };
