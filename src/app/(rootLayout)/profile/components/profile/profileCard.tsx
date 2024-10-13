@@ -16,6 +16,7 @@ import axios from "axios";
 import { useGetMyProfile, useUpdateProfile } from "@/hooks/user-hook";
 import { toast } from "sonner";
 import { motion } from "framer-motion"; 
+import { CheckCircle, Facebook } from "lucide-react";
 import envConfig from "@/config";
 
 const ProfileCard = () => {
@@ -141,9 +142,10 @@ const ProfileCard = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className="text-2xl font-bold text-gray-800"
+              className="text-2xl font-bold flex items-center text-gray-800"
             >
               {userData?.data?.name || "User Name"}
+              {userData?.data?.isVerified === true ? <CheckCircle className="ml-2 text-green-500" size={20} /> : null}
             </motion.p>
             <motion.p
               initial={{ opacity: 0 }}
