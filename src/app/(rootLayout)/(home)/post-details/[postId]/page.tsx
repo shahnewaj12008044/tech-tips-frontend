@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"; // Import the input component from shadcn
 import { Thumbnail } from "@/components/thumbnail";
 import dynamic from "next/dynamic";
-import { useGetSinglePost } from "@/hooks/post";
+import { useGetSinglePost } from "@/hooks/post-hook";
 import { useParams } from "next/navigation";
 import { useState, useRef } from "react";
 import { IComment } from "@/types";
@@ -13,7 +13,7 @@ import { useUser } from "@/context/user-provider";
 import { formatDistanceToNow } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import Comment from "./comment";
-import { useCreateComment, useGetComment } from "@/hooks/comment";
+import { useCreateComment, useGetComment } from "@/hooks/comment-hook";
 const Renderer = dynamic(() => import("@/components/renderer"), { ssr: false });
 const PostDetails = () => {
   const [newComment, setNewComment] = useState("");
@@ -22,10 +22,12 @@ const PostDetails = () => {
   const params = useParams();
   const { user } = useUser();
   const { data: post, isLoading, isError } = useGetSinglePost(params.postId);
-  const postId = Array.isArray(params.postId) ? params.postId[0] : params.postId;
+  const postId = Array.isArray(params.postId)
+    ? params.postId[0]
+    : params.postId;
   const { data: Comments, refetch } = useGetComment(postId);
   const { mutate: createComment } = useCreateComment();
- 
+
   const handleCommentSubmit = () => {
     if (newComment.trim()) {
       const newCommentData = {
@@ -38,7 +40,7 @@ const PostDetails = () => {
           refetch();
           setNewComment("");
         },
-        onError: (error : any) => {
+        onError: (error: any) => {
           console.error("Error creating comment:", error);
         },
       });
@@ -196,14 +198,14 @@ const PostDetails = () => {
         {/* Comments Section */}
         <div>
           <Comment
-          commentInputRef={commentInputRef} 
-          Comments={Comments}
-          handleCommentSubmit={handleCommentSubmit}
-          newComment={newComment}
-          setNewComment={setNewComment}
-          user={user ?? { _id: '', profilePhoto: '', name: '' }}
-          formatDistanceToNow={formatDistanceToNow}
-          refetch={refetch}
+            commentInputRef={commentInputRef}
+            Comments={Comments}
+            handleCommentSubmit={handleCommentSubmit}
+            newComment={newComment}
+            setNewComment={setNewComment}
+            user={user ?? { _id: "", profilePhoto: "", name: "" }}
+            formatDistanceToNow={formatDistanceToNow}
+            refetch={refetch}
           />
         </div>
       </div>

@@ -4,7 +4,7 @@ import { MdSend, MdDelete, MdEdit, MdClose } from "react-icons/md"; // Added MdC
 import { RefObject, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { useDeleteComment, useEditComment } from "@/hooks/comment";
+import { useDeleteComment, useEditComment } from "@/hooks/comment-hook";
 interface CommentProps {
   commentInputRef: RefObject<HTMLDivElement>;
   Comments: {
@@ -66,7 +66,7 @@ const Comment = ({
     }
   };
   const handleCancelEdit = () => {
-    setEditCommentId(null); 
+    setEditCommentId(null);
   };
   const handleDeleteComment = (id: string) => {
     deleteComment(id, {

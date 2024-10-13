@@ -1,13 +1,18 @@
 "use client";
 import dynamic from "next/dynamic";
 import { useRef, useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useUser } from "@/context/user-provider";
 import axios from "axios";
 
 import Quill from "quill";
 import envConfig from "@/config";
-import { useCreatePost, useGetAllPosts } from "@/hooks/post";
+import { useCreatePost, useGetAllPosts } from "@/hooks/post-hook";
 import { useRouter } from "next/navigation";
 
 const PostEditor = dynamic(() => import("@/components/editor"), { ssr: false });
@@ -19,16 +24,16 @@ const PostModal = ({ isOpen, onClose }: PostModalProps) => {
   const [uploading, setUploading] = useState(false);
   const [editorKey, setEditorKey] = useState(0);
   const editorRef = useRef<Quill | null>(null);
-  const { user } = useUser(); 
-  const {mutate: createPost, reset} = useCreatePost()
-  const {refetch} = useGetAllPosts()
+  const { user } = useUser();
+  const { mutate: createPost, reset } = useCreatePost();
+  const { refetch } = useGetAllPosts();
 
   const handleSubmit = async ({
     title,
     body,
     category,
     isPremium,
-    images
+    images,
   }: {
     title: string;
     body: string;
@@ -36,14 +41,11 @@ const PostModal = ({ isOpen, onClose }: PostModalProps) => {
     category: string;
     isPremium: boolean;
   }) => {
-    
-    
-    let imageUrls: string[] = []; 
-  
+    let imageUrls: string[] = [];
+
     if (images && images.length > 0) {
       setUploading(true);
-  
-   
+
       for (const image of images) {
         const formData = new FormData();
         formData.append("file", image);
@@ -57,7 +59,7 @@ const PostModal = ({ isOpen, onClose }: PostModalProps) => {
         } else {
           throw new Error("Cloud name is not defined");
         }
-  
+
         try {
           const response = await axios.post(
             `https://api.cloudinary.com/v1_1/${envConfig.cloudName}/image/upload`,
@@ -65,24 +67,25 @@ const PostModal = ({ isOpen, onClose }: PostModalProps) => {
             {
               headers: { "Content-Type": "multipart/form-data" },
               onUploadProgress: (progressEvent) => {
-                const percentCompleted = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
+                const percentCompleted = Math.round(
+                  (progressEvent.loaded * 100) / (progressEvent.total || 1)
+                );
                 console.log(`Upload progress: ${percentCompleted}%`);
               },
             }
           );
-  
-       
+
           imageUrls.push(response.data.secure_url);
         } catch (error) {
           console.error("Image upload failed:", error);
         }
       }
-  
+
       setUploading(false);
     }
-  
+
     console.log("imageUrls", imageUrls);
-  
+
     const postData = {
       title,
       content: body,
@@ -91,29 +94,29 @@ const PostModal = ({ isOpen, onClose }: PostModalProps) => {
       authorId: user?._id || "",
       images: imageUrls,
     };
-  
+
     console.log(postData);
-  
+
     try {
       createPost(postData, {
         onSuccess: () => {
           console.log("Post created successfully");
           setEditorKey((prevKey) => prevKey + 1);
-          refetch()
+          refetch();
           onClose();
         },
         onError: () => {
           console.error("Failed to create post");
-        }
+        },
       });
     } catch (error) {
       console.error("Error submitting post:", error);
     }
   };
-  
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-     <DialogContent className="w-full mx-auto justify-center max-h-[80vh] overflow-y-auto">
+      <DialogContent className="w-full mx-auto justify-center max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create Post</DialogTitle>
         </DialogHeader>
