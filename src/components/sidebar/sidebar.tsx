@@ -44,6 +44,10 @@ const Sidebar = () => {
       path: "/admin/manage-users",
     },
     {
+      name: "Activity Logs",
+      path: "/admin/activity-logs",
+    },
+    {
       name: "Manage Admin",
       path: "/admin/manage-admin",
     },

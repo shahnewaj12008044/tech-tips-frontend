@@ -34,14 +34,12 @@ const PostCard = () => {
   const [sort, setSort] = useState("");
 
   // Use the debounced value in the useGetAllPosts hook
-  const { data, error, isLoading } = useGetAllPosts({
+  const { data } = useGetAllPosts({
     searchTerm,
     category,
     sort,
   });
-  const { data: userData, refetch: refetchOnSuccess } = useGetMyProfile(
-    user?.email
-  );
+  const { data: userData, isLoading, refetch: refetchOnSuccess } = useGetMyProfile(user?.email);
   const router = useRouter();
 
   const followMutation = useUserFollow();
@@ -51,7 +49,7 @@ const PostCard = () => {
     setOpenSharePostId(postId);
   };
 
-  // if (isLoading) return <Loader />;
+  if (isLoading) return <Loader />;
 
   return (
     <div className="bg-gray-800 text-black max-w-3xl mx-auto rounded-lg shadow-lg p-4 space-y-8 group relative w-full bg-white/20 shadow-black/5 ring-[0.8px] ring-black/5">
