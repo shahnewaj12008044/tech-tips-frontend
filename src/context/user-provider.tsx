@@ -25,11 +25,7 @@ const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   const handleUser = async () => {
     const user = await getCurrentUser();
-    if (user) {
-      setUser(user);
-    } else {
-      setUser(null);
-    }
+    setUser(user);
     setIsLoading(false);
   };
   useEffect(() => {

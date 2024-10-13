@@ -34,7 +34,7 @@ import Loader from "@/components/Loader";
 const LoginPageContent = () => {
   const [error, setError] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
-  const { mutate: handleUserLogin, isPending, isSuccess } = useUserLogin();
+  const { mutate: handleUserLogin, isPending, isSuccess, data: loginResponse } = useUserLogin();
   const { setIsLoading } = useUser()
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -46,26 +46,31 @@ const LoginPageContent = () => {
   } = useForm({
     mode: "onChange",
   });
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    try {
-      handleUserLogin(data);
-      setIsLoading(true)
-    } catch (err: any) {
-      console.log(err);
-      setError(err?.data?.message || "Failed to login. Please try again.");
-      toast.error(err?.data?.message || "Failed to login. Please try again.");
+ 
+
+
+  useEffect(()=> {
+    if(loginResponse && !loginResponse.success){
+      setError(loginResponse.message);
+      setIsLoading(false);
+    }else if(loginResponse && loginResponse.success){
+     
+      if (!isPending && isSuccess) {
+        if (redirect) {
+          router.push(redirect);
+        } else {
+          router.push("/");
+        }
+      }
+      toast.success("Login successful");
     }
+  }, [loginResponse, isPending, isSuccess]);
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    handleUserLogin(data);
+    setIsLoading(true);
   };
 
-  useEffect(() => {
-    if (!isPending && isSuccess) {
-      if (redirect) {
-        router.push(redirect);
-      } else {
-        router.push("/");
-      }
-    }
-  }, [isPending, isSuccess]);
+ 
 
   return (
     <div className="h-full flex items-center justify-center bg-slate-300">

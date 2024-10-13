@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,7 +14,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { Separator } from "@/components/ui/separator";
 import { TriangleAlert } from "lucide-react";
-import { useState } from "react";
+import {useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import {
   useForm,
@@ -27,11 +28,15 @@ import { IoEye, IoEyeOff } from "react-icons/io5";
 import Link from "next/link";
 import { useUserRegistration } from "@/hooks/auth";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+
+
+
 
 const RegisterPage = () => {
   const [error, setError] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
-  const { mutate: userRegistration, isSuccess } = useUserRegistration();
+  const { mutate: userRegistration, isSuccess, data: registerResponse } = useUserRegistration();
   const router = useRouter();
 
   const {
@@ -43,21 +48,30 @@ const RegisterPage = () => {
     mode: "onChange",
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    try {
-      // Handle registration logic here
-      const userData = {
-        ...data,
+ 
+  
+  useEffect(()=> {
+    if(registerResponse && !registerResponse.success){
+      setError(registerResponse.message);
+    }else if(registerResponse && registerResponse.success){
+      if (isSuccess) {
+        router.push("/login");
       }
-     userRegistration(userData);
-      
-    } catch (err: any) {
-      setError(err?.data?.message || "An error occurred during registration.");
+      toast.success("Registration successful");
     }
+  }, [registerResponse, isSuccess]);
+
+  
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    const userData = {
+      ...data,
+    };
+    userRegistration(userData);
   };
-  if(isSuccess){
-    router.push("/login")
-  }
+
+
+
+
 
   return (
     <div className="h-full flex items-center justify-center bg-slate-300">
@@ -206,9 +220,9 @@ const RegisterPage = () => {
 
             <div className="flex flex-col gap-y-2.5">
               <Button
-                onClick={() => {
-                  signIn("google", { callbackUrl: "/" });
-                }}
+               onClick={() => {
+                signIn("google", { callbackUrl: "/" });
+              }}
                 variant="outline"
                 size="lg"
                 className="w-full relative"

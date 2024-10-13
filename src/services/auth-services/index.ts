@@ -15,7 +15,11 @@ export const registerUser = async (userData: FieldValues) => {
     }
     return data;
   } catch (error: any) {
-    throw new Error(error.response?.data?.message || error.message);
+    const data = {
+      success: false,
+      message: error?.response?.data?.message,
+    };
+    return data;
   }
 };
 export const loginUser = async (userData: FieldValues) => {
@@ -26,7 +30,11 @@ export const loginUser = async (userData: FieldValues) => {
     }
     return data;
   } catch (error: any) {
-    throw new Error(error.response?.data?.message || error.message);
+    const data = {
+      success: false,
+      message: error?.response?.data?.message,
+    };
+    return data;
   }
 };
 
@@ -51,10 +59,7 @@ export const resetPassword = async (userData: any) => {
   }
 };
 
-export const logoutUser = async () => {
-  cookies().delete("accessToken");
-  cookies().delete("refreshToken");
-};
+
 export const getCurrentUser = async () => {
   const accessToken = cookies().get("accessToken")?.value;
   let decodedToken = null;
@@ -68,8 +73,12 @@ export const getCurrentUser = async () => {
       status: decodedToken.status,
       profilePhoto: decodedToken.profilePhoto,
       isVerified: decodedToken.isVerified,
-      followers: decodedToken.followers,
-      following: decodedToken.following,
+
     };
   }
-}
+  return decodedToken;
+};
+export const logoutUser = async () => {
+  cookies().delete("accessToken");
+  cookies().delete("refreshToken");
+};
