@@ -34,6 +34,7 @@ import {
 import { VoteButton } from "../components/vote-button";
 import { CheckCircle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { useRouter } from "next/navigation";
 
 const Renderer = dynamic(() => import("@/components/renderer"), { ssr: false });
 
@@ -45,6 +46,8 @@ const PostCard = () => {
 
   const followMutation = useUserFollow();
   const unfollowMutation = useUserUnfollow();
+const router = useRouter()
+
 
   useEffect(() => {
     refetch();
@@ -71,6 +74,10 @@ const PostCard = () => {
         );
 
         const handleFollowToggle = async () => {
+          if(!user){
+            router.push('/login')
+            return
+          }
           try {
             if (isFollowing) {
               unfollowMutation.mutate(

@@ -60,3 +60,29 @@ export const createUnfollow = async ({
     throw new Error(error.response?.data?.message || error.message);
   }
 };
+
+
+export const getAllUsers = async () => {
+  try {
+    const { data } = await axiosInstance.get(`/users`);
+    return data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
+export const updateUser = async (id: string, userData: string) => {
+  try {
+    const { data } = await axiosInstance.put(`/users/${id}`, userData);
+    return data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
+export const deleteUser = async (id: string) => {
+  try {
+    const { data } = await axiosInstance.delete(`/users/${id}`);
+    return data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
