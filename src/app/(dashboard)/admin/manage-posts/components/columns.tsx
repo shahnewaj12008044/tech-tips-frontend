@@ -1,11 +1,14 @@
 "use client";
 import { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
-import { EditAdmin } from "./update-post";
+import { UpdatePost } from "./update-post";
 import { DeletePost } from "./delete-post";
 import Image from "next/image";
-import Renderer from "@/components/renderer";
+
 import CustomDialog from "@/app/(dashboard)/admin/manage-posts/components/custom-dialog";
+
+import dynamic from "next/dynamic";
+const Renderer = dynamic(() => import("@/components/renderer"), { ssr: false });
 export const columns: ColumnDef<any>[] = [
   {
     header: "ID",
@@ -62,6 +65,17 @@ export const columns: ColumnDef<any>[] = [
     ),
   },
   {
+    accessorKey: "category",
+    header: "Category",
+    cell: ({ row }) => (
+      <div className="min-w-[115px]">
+        <Badge variant="default" className="text-14-medium truncate text-white">
+          {row.original.category}
+        </Badge>
+      </div>
+    ),
+  },
+  {
     accessorKey: "authorId",
     header: "Author Email",
     cell: ({ row }) => (
@@ -75,7 +89,7 @@ export const columns: ColumnDef<any>[] = [
     header: () => <div className="pl-4">Actions</div>,
     cell: ({ row }) => (
       <div className="flex gap-2">
-        <EditAdmin admin={row.original} />
+        <UpdatePost postData={row.original} />
         <DeletePost id={row.original._id} postData={row.original} />
       </div>
     ),

@@ -46,6 +46,10 @@ const Sidebar = () => {
     {
       name: "Manage Admin",
       path: "/admin/manage-admin",
+    },
+    {
+      name: "Payments History",
+      path: "/admin/payment-history",
     }
   
   ];

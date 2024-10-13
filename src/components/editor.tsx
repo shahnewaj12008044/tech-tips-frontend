@@ -1,7 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-
-import Quill, {type QuillOptions } from "quill";
-
+import Quill, { type QuillOptions } from "quill";
 import "quill/dist/quill.snow.css";
 import {
   MutableRefObject,
@@ -27,7 +25,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "./ui/input";
 
 type EditorValue = {
   title: string;
@@ -42,26 +39,36 @@ interface EditorProps {
   onCancel?: () => void;
   placeholder?: string;
   defaultValue?: Delta | Op[];
+  defaultTitle?: string;
+  defaultCategory?: string;
+  defaultIsPremium?: boolean;
+  defaultImages?: File[];
   disabled?: boolean;
   innerRef?: MutableRefObject<Quill | null>;
   variant?: "create" | "update";
 }
+
+import { Input } from "./ui/input";
 
 const PostEditor = ({
   onSubmit,
   onCancel,
   placeholder = "Write something...",
   defaultValue = [],
+  defaultTitle = "",
+  defaultCategory = "",
+  defaultIsPremium = false,
+  defaultImages = [],
   disabled = false,
   innerRef,
   variant = "create",
 }: EditorProps) => {
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(defaultTitle);
   const [text, setText] = useState("");
   const [isToolbarVisible, setIsToolbarVisible] = useState(true);
-  const [images, setImages] = useState<File[]>([]);
-  const [category, setCategory] = useState("");
-  const [isPremium, setIsPremium] = useState(false);
+  const [images, setImages] = useState<(File | string)[]>(defaultImages);
+  const [category, setCategory] = useState(defaultCategory);
+  const [isPremium, setIsPremium] = useState(defaultIsPremium);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const submitRef = useRef(onSubmit);
@@ -91,7 +98,7 @@ const PostEditor = ({
       modules: {
         toolbar: isToolbarVisible
           ? [
-            ["bold", "italic", "strike", "underline"],
+              ["bold", "italic", "strike", "underline"],
               ["link"],
               [{ list: "ordered" }, { list: "bullet" }],
             ]
@@ -107,7 +114,15 @@ const PostEditor = ({
                 if (isEmpty) return;
 
                 const body = JSON.stringify(quill.getContents());
-                submitRef.current?.({ title, body, images, category, isPremium });
+                submitRef.current?.({
+                  title,
+                  body,
+                  images: images.filter(
+                    (image): image is File => typeof image !== "string"
+                  ),
+                  category,
+                  isPremium,
+                });
               },
             },
             shift_enter: {
@@ -125,6 +140,9 @@ const PostEditor = ({
 
     quillRef.current = quill;
     quillRef.current.focus();
+    if (defaultValue) {
+      quill.setContents(defaultValue);
+    }
 
     if (innerRef) {
       innerRef.current = quill;
@@ -177,52 +195,53 @@ const PostEditor = ({
   const isEmpty = !images.length && text.trim().length === 0;
   const isTitleValid = title !== "";
   const isCategoryValid = category !== "";
+
   return (
     <div className="flex flex-col max-w-[280px] md:max-w-lg">
-    {/* Title Input */}
-    <Input
-      type="text"
-      value={title}
-      onChange={(e) => setTitle(e.target.value)}
-      placeholder="Enter the title"
-      className="mb-2" 
-      disabled={disabled}
-    />
-    <div className="flex gap-5">
-    <div className="w-96 mb-2">
-      <Select
-        name="category"
-        onValueChange={setCategory} // Update category state on selection
-      >
-        <SelectTrigger className="col-span-3">
-          <SelectValue placeholder="Select a category" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectItem value="web">Web</SelectItem>
-            <SelectItem value="software engineering">
-              Software Engineering
-            </SelectItem>
-            <SelectItem value="AI">AI</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-      
-    </div>
-    {/* Premium Checkbox */}
-    <div className="mt-1">
-      <label className="inline-flex items-center text-sm">
-        <input
-          type="checkbox"
-          checked={isPremium} // Binds the checkbox state to isPremium
-          onChange={(e) => setIsPremium(e.target.checked)} // Updates isPremium based on checkbox status
-          className="mr-2"
-        />
-        Mark as Premium
-      </label>
-      
+      {/* Title Input */}
+      <Input
+        type="text"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Enter the title"
+        className="mb-2"
+        disabled={disabled}
+      />
+
+      <div className="flex gap-5">
+        <div className="w-96 mb-2">
+          <Select
+            name="category"
+            defaultValue={defaultCategory}
+            onValueChange={setCategory}
+          >
+            <SelectTrigger className="col-span-3">
+              <SelectValue placeholder="Select a category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem value="web">Web</SelectItem>
+                <SelectItem value="software engineering">
+                  Software Engineering
+                </SelectItem>
+                <SelectItem value="AI">AI</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+        {/* Premium Checkbox */}
+        <div className="mt-1">
+          <label className="inline-flex items-center text-sm">
+            <input
+              type="checkbox"
+              checked={isPremium} // Binds the checkbox state to isPremium
+              onChange={(e) => setIsPremium(e.target.checked)} // Updates isPremium based on checkbox status
+              className="mr-2"
+            />
+            Mark as Premium
+          </label>
+        </div>
       </div>
-    </div>
 
       <input
         type="file"
@@ -242,7 +261,7 @@ const PostEditor = ({
         {!!images.length && (
           <div className="p-2 flex flex-wrap gap-2">
             {images.map((image, index) => (
-                <div
+              <div
                 key={index}
                 className="relative size-[62px] flex items-center justify-center group/image"
               >
@@ -254,12 +273,21 @@ const PostEditor = ({
                     <XIcon className="size-3.5" />
                   </button>
                 </Hint>
-                <Image
-                  src={URL.createObjectURL(image)}
-                  alt="Upload"
-                  fill
-                  className="rounded-xl overflow-hidden border object-cover"
-                />
+                {typeof image === "string" ? (
+                  <Image
+                    src={image} // Use the URL directly for string-based images
+                    alt="Uploaded Image"
+                    fill
+                    className="rounded-xl overflow-hidden border object-cover"
+                  />
+                ) : (
+                  <Image
+                    src={URL.createObjectURL(image)} // Create an object URL for File-based images
+                    alt="Uploaded Image"
+                    fill
+                    className="rounded-xl overflow-hidden border object-cover"
+                  />
+                )}
               </div>
             ))}
           </div>
@@ -295,24 +323,30 @@ const PostEditor = ({
             </Hint>
           )}
           {variant === "update" && (
-            <div className="ml-auto flex items-center gap-x-2">
+            <Hint label="Image">
               <Button
-                variant="outline"
-                size="sm"
-                onClick={onCancel}
                 disabled={disabled}
+                variant="ghost"
+                size="icon"
+                onClick={() => imageElementRef.current?.click()}
               >
-                Cancel
+                <ImageIcon className="size-4" />
               </Button>
+            </Hint>
+          )}
+          {variant === "update" && (
+            <div className="ml-auto flex items-center gap-x-2">
               <Button
                 disabled={disabled || isEmpty}
                 onClick={() => {
                   onSubmit({
-                    title,
+                    title: title,
                     body: JSON.stringify(quillRef.current?.getContents()),
-                    images,
-                    category,
-                    isPremium
+                    images: images.filter(
+                      (image): image is File => typeof image !== "string"
+                    ),
+                    category: category,
+                    isPremium: isPremium,
                   });
                 }}
                 size="sm"
@@ -324,22 +358,23 @@ const PostEditor = ({
           )}
           {variant === "create" && (
             <Button
-            className={cn(
-              "ml-auto",
-              isEmpty || !isTitleValid || !isCategoryValid
-                ? "bg-white hover:bg-white text-muted-foreground"
-                : "bg-[#007a5a] hover:bg-[#007a5a]/80 text-white"
-            )}
+              className={cn(
+                "ml-auto",
+                isEmpty || !isTitleValid || !isCategoryValid
+                  ? "bg-white hover:bg-white text-muted-foreground"
+                  : "bg-[#007a5a] hover:bg-[#007a5a]/80 text-white"
+              )}
               size="icon"
               disabled={disabled || isEmpty}
               onClick={() => {
                 onSubmit({
                   title,
                   body: JSON.stringify(quillRef.current?.getContents()),
-                  images,
+                  images: images.filter(
+                    (image): image is File => typeof image !== "string"
+                  ),
                   category,
                   isPremium,
-                  
                 });
               }}
             >
