@@ -5,6 +5,8 @@ import { cookies } from "next/headers";
 import { FieldValues } from "react-hook-form";
 import { jwtDecode } from "jwt-decode";
 import { redirect } from "next/navigation";
+
+
 export const registerUser = async (userData: FieldValues) => {
   try {
     const { data } = await axiosInstance.post("/auth/register", userData);
@@ -30,7 +32,10 @@ export const loginUser = async (userData: FieldValues) => {
 
 export const forgetPassword = async (userData: FieldValues) => {
   try {
-    const { data } = await axiosInstance.post("/auth/login", userData);
+    const { data } = await axiosInstance.post(
+      "/auth/forget-password",
+      userData
+    );
     return data;
   } catch (error: any) {
     throw new Error(error);
@@ -62,6 +67,9 @@ export const getCurrentUser = async () => {
       role: decodedToken.role,
       status: decodedToken.status,
       profilePhoto: decodedToken.profilePhoto,
+      isVerified: decodedToken.isVerified,
+      followers: decodedToken.followers,
+      following: decodedToken.following,
     };
   }
 }

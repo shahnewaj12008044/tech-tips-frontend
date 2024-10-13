@@ -161,7 +161,7 @@ const Navbar = () => {
                       </DropdownMenuItem>
                       <DropdownMenuItem>
                         <LayoutDashboardIcon className="w-4 h-4 mr-2" />
-                        <Link href={`/${user.role}`}>Dashboard</Link>
+                        <Link href={`/dashboard/${user.role}`}>Dashboard</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={handleLogout}>
                         <LogOut className="w-4 h-4 mr-2" />
@@ -225,8 +225,15 @@ const Navbar = () => {
                   <Link href="/profile">Profile</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
+                {user.role === "admin" ? (
+                    <div className="flex items-center">
+                      <LayoutDashboardIcon className="w-4 h-4 mr-2" />
+                      <Link href={`/${user.role}/admin`}>Dashboard</Link>
+                    </div>
+                  ) : <div className="flex items-center">
                   <LayoutDashboardIcon className="w-4 h-4 mr-2" />
-                  <Link href={`/${user.role}`}>Dashboard</Link>
+                  <Link href={`/${user.role}/user`}>Dashboard</Link>
+                  </div>}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="w-4 h-4 mr-2" />

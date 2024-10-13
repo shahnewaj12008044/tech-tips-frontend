@@ -4,8 +4,8 @@ type Role = keyof typeof roleBasedPrivateRoutes;
 const authRoutes = ["/login", "/register"];
 const privateRoute = ["/profile"];
 const roleBasedPrivateRoutes = {
-  user: [/^\/dashboard\/user/],
-  admin: [/^\/dashboard\/admin/],
+  user: [/^\/user/],
+  admin: [/^\/admin/],
 };
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -31,5 +31,5 @@ export async function middleware(request: NextRequest) {
   return NextResponse.redirect(new URL("/", request.url));
 }
 export const config = {
-  matcher: ["/profile", "/login", "/register", "/dashboard/:page*"],
+  matcher: ["/profile", "/login", "/register", "/user/:page*", "/admin/:page*"],
 }

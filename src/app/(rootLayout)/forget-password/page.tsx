@@ -29,7 +29,7 @@ const ForgetPassword = () => {
     }
 };
   return (
-    <div className="h-full flex items-center justify-center bg-slate-500">
+    <div className="h-full flex items-center justify-center bg-slate-500 min-h-screen">
       <div className="md:h-auto md:w-[420px]">
         <Card className="w-full h-full p-8">
           <CardHeader className="px-0 pt-0 text-center">

@@ -1,11 +1,11 @@
 import React from 'react';
 
-const page = () => {
+const Booking = () => {
     return (
         <div>
-            this is user
+            this is booking
         </div>
     );
 };
 
-export default page;
+export default Booking;
