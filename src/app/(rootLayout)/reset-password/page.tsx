@@ -12,8 +12,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useUserResetPassword } from "@/hooks/auth";
+import { Suspense } from 'react';
+import Loader from "@/components/Loader";
+
 
 interface FormValues {
   email: string;
@@ -21,10 +24,10 @@ interface FormValues {
 }
 const ResetPassword = () => {
   const [isShowPassword, setIsShowPassword] = useState(false);
-  const { mutateAsync: resetPassword, isSuccess } = useUserResetPassword();
+  const { mutateAsync: resetPassword } = useUserResetPassword();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
-  console.log(token);
+  const router = useRouter()
 
   const {
     register,
@@ -40,7 +43,12 @@ const ResetPassword = () => {
           email: data.email,
           token,
           newPassword: data.newPassword,
-        });
+        },{
+          onSuccess: () => {
+            router.push('/login');
+          }
+        }
+      );
         console.log(res);
       } catch (error) {
         console.error("Error resetting password:", error);
@@ -52,7 +60,7 @@ const ResetPassword = () => {
       <div className="md:h-auto md:w-[420px]">
         <Card className="w-full h-full p-8">
           <CardHeader className="px-0 pt-0 text-center">
-            <CardTitle> Forget Password</CardTitle>
+            <CardTitle>Forget Password</CardTitle>
             <CardDescription>Use your email to continue</CardDescription>
           </CardHeader>
           <CardContent className="space-y-5 px-0 pb-0">
@@ -106,4 +114,11 @@ const ResetPassword = () => {
     </div>
   );
 };
-export default ResetPassword;
+
+
+const ResetPasswordWrapper = () => (
+  <Suspense fallback={<div><Loader /></div>}>
+    <ResetPassword />
+  </Suspense>
+);
+export default ResetPasswordWrapper;
