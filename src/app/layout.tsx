@@ -5,8 +5,8 @@ import { Providers } from "@/lib/providers";
 
 const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
-  title: "Tech Tips Blog",
-  description: "Tech Tips blog helps tech enthusiasts by sharing tips and tricks",
+  title: "Tech Tips blog",
+  description: "Tech Tips blog is a blog website for tech enthusiasts.",
 };
 
 export default function RootLayout({

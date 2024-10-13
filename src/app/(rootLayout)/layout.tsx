@@ -6,7 +6,6 @@ const RootLayout = ({children}:{children: ReactNode}) => {
         <>
         <Navbar />
       <div className="min-h-screen bg-slate-300">  {children}</div>
-        <Footer />
         </>
     )
 }

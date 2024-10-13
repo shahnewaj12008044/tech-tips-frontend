@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import logo from '../../../public/assets/images/logo.png';
+import logo from '../../../public/logo.png';
 import { useUser } from "@/context/user-provider";
 import { usePremiumPayment } from "@/hooks/payment";
 

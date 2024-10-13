@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 "use client";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,12 +28,14 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { useUser } from "@/context/user-provider";
 import { useRouter, useSearchParams } from "next/navigation";
+import React, { Suspense } from "react";
+import Loader from "@/components/Loader";
 
-const LoginPage = () => {
+const LoginPageContent = () => {
   const [error, setError] = useState("");
   const [isShowPassword, setIsShowPassword] = useState(false);
   const { mutate: handleUserLogin, isPending, isSuccess } = useUserLogin();
-  const {setIsLoading} = useUser()
+  const { setIsLoading } = useUser()
   const searchParams = useSearchParams();
   const router = useRouter();
   const redirect = searchParams.get("redirect");
@@ -178,6 +182,14 @@ const LoginPage = () => {
         </Card>
       </div>
     </div>
+  );
+};
+
+const LoginPage = () => {
+  return (
+    <Suspense fallback={<div><Loader /> </div>}>
+      <LoginPageContent />
+    </Suspense>
   );
 };
 

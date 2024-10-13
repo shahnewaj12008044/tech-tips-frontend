@@ -5,10 +5,11 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import Lottie from "lottie-react";
+import dynamic from "next/dynamic";
 import { SiMinutemailer } from "react-icons/si";
 import { motion } from "framer-motion";
-import Image from "next/image";
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
+
 
 const features = [
   {

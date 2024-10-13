@@ -16,3 +16,12 @@ export const getAllPosts = async () => {
     throw new Error(error.response?.data?.message || error.message);
   }
 }
+
+export const getSinglePost = async (postId: any) => {
+  try {
+    const { data } = await axiosInstance.get(`/posts/${postId}`);
+    return data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};

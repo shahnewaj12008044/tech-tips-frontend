@@ -2,11 +2,13 @@
 import { useEffect } from "react";
 import Image from "next/image";
 import { useGetAllPosts } from "@/hooks/post"; // Custom hook to fetch posts
-import { Thumbnail } from "../thumbnail"; // Thumbnail component for displaying images
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import dynamic from "next/dynamic";
-import { Button } from "../ui/button";
+
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Thumbnail } from "@/components/thumbnail";
 const Renderer = dynamic(() => import("@/components/renderer"), { ssr: false });
 
 const PostCard = () => {
@@ -23,7 +25,7 @@ const PostCard = () => {
     <div className="bg-gray-900 text-white max-w-3xl mx-auto rounded-xl shadow-lg p-6 space-y-8 group relative w-full  shadow-black/10 ring-[0.8px] ring-black/10">
       <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-500 opacity-[0.1] blur-lg"></div>
       <div className="relative space-y-6 rounded-lg shadow-md shadow-black/10 ring-[0.8px] ring-black/10">
-        {data?.data.map((post) => (
+        {data?.data.map((post : any) => (
           <div
             key={post._id}
             className="bg-gray-800 text-white p-6 rounded-lg shadow-md transition-transform duration-200 hover:-translate-y-1 hover:shadow-2xl"
@@ -38,8 +40,12 @@ const PostCard = () => {
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-bold text-white">{post.authorId?.name || "Unknown Author"}</p>
-                  <p className="text-gray-400 text-sm">{new Date(post.createdAt).toLocaleDateString()}</p>
+                  <p className="font-bold text-white">
+                    {post.authorId?.name || "Unknown Author"}
+                  </p>
+                  <p className="text-gray-400 text-sm">
+                    {new Date(post.createdAt).toLocaleDateString()}
+                  </p>
                 </div>
               </div>
               <Button className="bg-indigo-500 text-white px-4 py-1 rounded-full hover:bg-indigo-600">
@@ -47,9 +53,11 @@ const PostCard = () => {
               </Button>
             </div>
 
-            <Link href={`/posts/${post._id}`}>
+            <Link href={`/post-details/${post._id}`}>
               {/* Post Title */}
-              <p className="mb-4 text-2xl font-semibold text-white">{post.title}</p>
+              <p className="mb-4 text-2xl font-semibold text-white">
+                {post.title}
+              </p>
               {/* Post Content (Shortened) */}
               <div className="flex flex-col w-full">
                 <Renderer value={post.content} maxLength={300} />
@@ -59,7 +67,7 @@ const PostCard = () => {
             {/* Post Images */}
             {post.images?.length > 0 && (
               <div className="space-y-4 mb-4">
-                {post.images.map((imageUrl, index) => (
+                {post.images.map((imageUrl : any, index : any) => (
                   <Thumbnail key={index} url={imageUrl} />
                 ))}
               </div>
@@ -71,19 +79,36 @@ const PostCard = () => {
                 {/* Upvote/Downvote */}
                 <div className="flex items-center space-x-2 bg-gray-700 p-2 rounded-full hover:bg-gray-600">
                   <button className="hover:text-red-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 24 24">
-                      <path fill="currentColor" d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625zM15 12h-1v8h-4v-8H6.081L12 4.601L17.919 12z" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1.2rem"
+                      height="1.2rem"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M12.781 2.375c-.381-.475-1.181-.475-1.562 0l-8 10A1.001 1.001 0 0 0 4 14h4v7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7h4a1.001 1.001 0 0 0 .781-1.625zM15 12h-1v8h-4v-8H6.081L12 4.601L17.919 12z"
+                      />
                     </svg>
                   </button>
                   <span>{post.upvotes}</span>
                   <button className="hover:text-[#564FC4]">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 24 24">
-                      <path fill="currentColor" d="M20.901 10.566A1 1 0 0 0 20 10h-4V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v7H4a1.001 1.001 0 0 0-.781 1.625l8 10a1 1 0 0 0 1.562 0l8-10c.24-.301.286-.712.12-1.059M12 19.399L6.081 12H10V4h4v8h3.919z" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1.2rem"
+                      height="1.2rem"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M20.901 10.566A1 1 0 0 0 20 10h-4V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v7H4a1.001 1.001 0 0 0-.781 1.625l8 10a1 1 0 0 0 1.562 0l8-10c.24-.301.286-.712.12-1.059M12 19.399L6.081 12H10V4h4v8h3.919z"
+                      />
                     </svg>
                   </button>
                 </div>
 
                 {/* Comments */}
+                <Link href={`/post-details/${post._id}`}>
                 <div className="flex items-center space-x-2 bg-gray-700 p-2 rounded-full hover:bg-gray-600">
                   <svg
                     aria-hidden="true"
@@ -96,8 +121,11 @@ const PostCard = () => {
                   >
                     <path d="M7.725 19.872a.718.718 0 0 1-.607-.328.725.725 0 0 1-.118-.397V16H3.625A2.63 2.63 0 0 1 1 13.375v-9.75A2.629 2.629 0 0 1 3.625 1h12.75A2.63 2.63 0 0 1 19 3.625v9.75A2.63 2.63 0 0 1 16.375 16h-4.161l-4 3.681a.725.725 0 0 1-.489.191ZM3.625 2.25A1.377 1.377 0 0 0 2.25 3.625v9.75a1.377 1.377 0 0 0 1.375 1.375h4a.625.625 0 0 1 .625.625v2.575l3.3-3.035a.628.628 0 0 1 .424-.165h4.4a1.377 1.377 0 0 0 1.375-1.375v-9.75a1.377 1.377 0 0 0-1.374-1.375H3.625Z" />
                   </svg>
-                  <span>{Array.isArray(post.comments) ? post.comments.length : 0}</span>
+                  <span>
+                    {Array.isArray(post.comments) ? post.comments.length : 0}
+                  </span>
                 </div>
+                </Link>
 
                 {/* Share */}
                 <button className="flex items-center space-x-2 bg-gray-700 p-2 rounded-full hover:bg-gray-600">

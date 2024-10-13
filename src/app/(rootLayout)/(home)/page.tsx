@@ -1,4 +1,6 @@
-import PostCard from "@/components/news-feed/post";
+import PostCard from "./news-feed/post";
+
+
 
 export default function Home() {
 
