@@ -4,10 +4,12 @@ import {
   createPostUpvote,
   getAllPosts,
   getSinglePost,
-  getMyPost
+  getMyPost,
+  deletePost,
+  updatePost,
 } from "@/services/post-services";
 import { IPost } from "@/types";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 
@@ -93,5 +95,40 @@ export const useGetMyPost = (email: any) => {
   return useQuery({
     queryKey: ["GET_MY_POST", email],
     queryFn: async () => await getMyPost(email),
+  });
+};
+
+
+export const useUpdatePost = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["UPDATE_POST"],
+    mutationFn: async ({ id, userData }: { id: string; userData: any }) => {
+      const result = await updatePost(id, userData);
+      return result;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["GET_ALL_POSTS"],
+      });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+};
+export const useDeletePost = () => {
+  const queryClient = useQueryClient();
+  return useMutation<any, Error, string>({
+    mutationKey: ["DELETE_POST"],
+    mutationFn: async (id: string) => await deletePost(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["GET_ALL_POSTS"],
+      });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
   });
 };

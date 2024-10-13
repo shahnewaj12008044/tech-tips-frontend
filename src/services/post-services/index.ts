@@ -66,3 +66,22 @@ export const getMyPost = async (email: any) => {
     throw new Error(error.response?.data?.message || error.message);
   }
 };
+
+// update post
+export const updatePost = async (postId: any, userData: any) => {
+  try {
+    const { data } = await axiosInstance.put(`/posts/${postId}`, userData);
+    return data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
+// delete post
+export const deletePost = async (postId: any) => {
+  try {
+    const { data } = await axiosInstance.delete(`/posts/${postId}`);
+    return data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
