@@ -17,7 +17,11 @@ export const useUserRegistration = () => {
       toast.success("User registration successful.");
     },
     onError: (error) => {
-      toast.error(error.message);
+      if (error?.message) {
+        toast.error(error.message || "Register failed.");
+      } else {
+        toast.error("An unexpected error occurred.");
+      }
     },
   });
 };
@@ -55,7 +59,11 @@ export const useUserForgetPassword = () => {
       toast.success("Check your email for password reset link. .");
     },
     onError: (error: any) => {
-      toast.error(error.message || "Failed to send forget link.");
+      if (error?.message) {
+        toast.error(error.message || "Login failed.");
+      } else {
+        toast.error("An unexpected error occurred.");
+      }
     },
   });
 };

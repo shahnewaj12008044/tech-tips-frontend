@@ -33,6 +33,7 @@ import {
   LayoutDashboardIcon,
   NewspaperIcon,
   Plus,
+  BadgeDollarSign,
 } from "lucide-react";
 import { Cross as Hamburger } from "hamburger-react";
 import { useUser } from "@/context/user-provider";
@@ -41,12 +42,11 @@ import { protectedRoutes } from "@/utils/constant";
 import PostModal from "@/components/post-modal";
 import Image from "next/image";
 
-
 const Navbar = () => {
   const pathname = usePathname();
   const { user, setIsLoading } = useUser();
   const [isOpen, setIsOpen] = useState(false);
-  const [isPostModalOpen, setPostModalOpen] = useState(false); 
+  const [isPostModalOpen, setPostModalOpen] = useState(false);
   const router = useRouter();
 
   const handleLogout = () => {
@@ -123,13 +123,13 @@ const Navbar = () => {
                   ))}
                 </div>
                 {user?.email && (
-                <Button
-                  onClick={() => setPostModalOpen(true)}
-                  className="bg-transparent rounded-full hover:bg-black/40  text-black"
-                >
-                  <Plus className="w-6 h-6 mr-1" /> Create Post
-                </Button>
-              )}
+                   <Button
+                   onClick={() => setPostModalOpen(true)}
+                   className="bg-transparent rounded-full hover:bg-black/40  text-black"
+                 >
+                   <Plus className="w-6 h-6 mr-1" /> Create Post
+                 </Button>
+               )}
               </SheetHeader>
               <SheetFooter className="w-full">
                 {!user?.email ? (
@@ -160,8 +160,21 @@ const Navbar = () => {
                         <Link href={"/profile"}>Profile</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem>
-                        <LayoutDashboardIcon className="w-4 h-4 mr-2" />
-                        <Link href={`/dashboard/${user.role}`}>Dashboard</Link>
+                      {user.role === "admin" ? (
+                          <div className="flex items-center">
+                            <LayoutDashboardIcon className="w-4 h-4 mr-2" />
+                            <Link href={`/${user.role}/admin`}>Dashboard</Link>
+                          </div>
+                        ) : (
+                          <div className="flex items-center">
+                            <LayoutDashboardIcon className="w-4 h-4 mr-2" />
+                            <Link href={`/${user.role}/user`}>Dashboard</Link>
+                          </div>
+                        )}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <BadgeDollarSign className="w-4 h-4 mr-2" />
+                        <Link href="/premium">Premium</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={handleLogout}>
                         <LogOut className="w-4 h-4 mr-2" />
@@ -191,9 +204,9 @@ const Navbar = () => {
               </p>
             </Link>
           ))}
-          </div>
+        </div>
 
-            {/* New Post button for large screens */}
+        {/* New Post button for large screens */}
         <div className="hidden md:flex items-center mr-2">
           {user?.email && (
             <Button
@@ -225,15 +238,21 @@ const Navbar = () => {
                   <Link href="/profile">Profile</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                {user.role === "admin" ? (
+                  {user.role === "admin" ? (
                     <div className="flex items-center">
                       <LayoutDashboardIcon className="w-4 h-4 mr-2" />
                       <Link href={`/${user.role}/admin`}>Dashboard</Link>
                     </div>
-                  ) : <div className="flex items-center">
-                  <LayoutDashboardIcon className="w-4 h-4 mr-2" />
-                  <Link href={`/${user.role}/user`}>Dashboard</Link>
-                  </div>}
+                      ) : (
+                        <div className="flex items-center">
+                          <LayoutDashboardIcon className="w-4 h-4 mr-2" />
+                          <Link href={`/${user.role}/user`}>Dashboard</Link>
+                        </div>
+                      )}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <BadgeDollarSign className="w-4 h-4 mr-2" />
+                      <Link href="/premium">Premium</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="w-4 h-4 mr-2" />
@@ -242,9 +261,8 @@ const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           )}
-        
+        </div>
       </div>
-    </div>
       {/* Post Modal */}
       <PostModal
         isOpen={isPostModalOpen}

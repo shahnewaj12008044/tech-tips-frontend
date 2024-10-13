@@ -23,6 +23,7 @@ import { useState, useEffect } from "react";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { useUserLogin } from "@/hooks/auth";
 import Link from "next/link";
+import { toast } from "sonner";
 import { useUser } from "@/context/user-provider";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -46,7 +47,9 @@ const LoginPage = () => {
       handleUserLogin(data);
       setIsLoading(true)
     } catch (err: any) {
+      console.log(err);
       setError(err?.data?.message || "Failed to login. Please try again.");
+      toast.error(err?.data?.message || "Failed to login. Please try again.");
     }
   };
 
