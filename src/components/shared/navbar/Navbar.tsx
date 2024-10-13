@@ -34,6 +34,7 @@ import {
   NewspaperIcon,
   Plus,
   BadgeDollarSign,
+  Bell,
 } from "lucide-react";
 import { Cross as Hamburger } from "hamburger-react";
 import { useUser } from "@/context/user-provider";
@@ -41,12 +42,16 @@ import { logoutUser } from "@/services/auth-services";
 import { protectedRoutes } from "@/utils/constant";
 import PostModal from "@/components/post-modal";
 import Image from "next/image";
+import { NotificationDialog } from "@/components/notification-dialog";
+import { useNotifications } from "@/context/notification-provider";
 
 const Navbar = () => {
   const pathname = usePathname();
   const { user, setIsLoading } = useUser();
   const [isOpen, setIsOpen] = useState(false);
   const [isPostModalOpen, setPostModalOpen] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const { notifications, clearNotification } = useNotifications();
   const router = useRouter();
 
   const handleLogout = () => {
@@ -123,13 +128,13 @@ const Navbar = () => {
                   ))}
                 </div>
                 {user?.email && (
-                   <Button
-                   onClick={() => setPostModalOpen(true)}
-                   className="bg-transparent rounded-full hover:bg-black/40  text-black"
-                 >
-                   <Plus className="w-6 h-6 mr-1" /> Create Post
-                 </Button>
-               )}
+                  <Button
+                    onClick={() => setPostModalOpen(true)}
+                    className="bg-transparent rounded-full hover:bg-black/40  text-black"
+                  >
+                    <Plus className="w-6 h-6 mr-1" /> Create Post
+                  </Button>
+                )}
               </SheetHeader>
               <SheetFooter className="w-full">
                 {!user?.email ? (
@@ -160,7 +165,7 @@ const Navbar = () => {
                         <Link href={"/profile"}>Profile</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem>
-                      {user.role === "admin" ? (
+                        {user.role === "admin" ? (
                           <div className="flex items-center">
                             <LayoutDashboardIcon className="w-4 h-4 mr-2" />
                             <Link href={`/${user.role}/admin`}>Dashboard</Link>
@@ -217,7 +222,26 @@ const Navbar = () => {
             </Button>
           )}
         </div>
-        <div className="hidden md:flex items-center ml-auto">
+        {/* Notifications and Avatar section for large screens */}
+        <div className="hidden md:flex items-center ml-auto gap-4">
+          {/* Notifications Bell Icon */}
+          <Button
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="bg-transparent hover:bg-transparent relative"
+          >
+            <Bell className="text-white w-6 h-6" />
+            {notifications.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
+                {notifications.length}
+              </span>
+            )}
+          </Button>
+          <NotificationDialog
+            isOpen={showNotifications}
+            onClose={() => setShowNotifications(false)}
+            notifications={notifications}
+            clearNotification={clearNotification}
+          />
           {!user?.email ? (
             <Link href="/login">
               <Button className="btn-primary ">LOGIN</Button>
@@ -243,16 +267,16 @@ const Navbar = () => {
                       <LayoutDashboardIcon className="w-4 h-4 mr-2" />
                       <Link href={`/${user.role}/admin`}>Dashboard</Link>
                     </div>
-                      ) : (
-                        <div className="flex items-center">
-                          <LayoutDashboardIcon className="w-4 h-4 mr-2" />
-                          <Link href={`/${user.role}/user`}>Dashboard</Link>
-                        </div>
-                      )}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <BadgeDollarSign className="w-4 h-4 mr-2" />
-                      <Link href="/premium">Premium</Link>
+                  ) : (
+                    <div className="flex items-center">
+                      <LayoutDashboardIcon className="w-4 h-4 mr-2" />
+                      <Link href={`/${user.role}/user`}>Dashboard</Link>
+                    </div>
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <BadgeDollarSign className="w-4 h-4 mr-2" />
+                  <Link href="/premium">Premium</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="w-4 h-4 mr-2" />
