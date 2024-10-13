@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useGetMyProfile, useUpdateProfile } from "@/hooks/user-hook";
 import { toast } from "sonner";
+import { motion } from "framer-motion"; 
 import envConfig from "@/config";
 
 const ProfileCard = () => {
@@ -25,7 +26,7 @@ const ProfileCard = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [imagePreview, setImagePreview] = useState("");
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false); 
 
   useEffect(() => {
     if (userData) {
@@ -99,7 +100,7 @@ const ProfileCard = () => {
             {
               onSuccess: () => {
                 refetch();
-                setIsDialogOpen(false);
+                setIsDialogOpen(false); 
               },
             }
           );
@@ -116,62 +117,76 @@ const ProfileCard = () => {
   };
 
   return (
-    <>
-      <div className="bg-white shadow-lg rounded-xl p-6 w-full max-w-3xl mx-auto flex flex-col md:flex-row items-center gap-8">
-        <div className="flex flex-col items-center">
-          <Avatar className="w-32 h-32 shadow-lg">
-            <AvatarImage
-              src={userData?.data.profilePhoto || ""}
-              alt="User Avatar"
-              className="rounded-full border-4 border-white cursor-pointer"
-            />
-            <AvatarFallback className="bg-sky-500 text-white rounded-full text-2xl">
-              {avatarFallback}
-            </AvatarFallback>
-          </Avatar>
-          <div className="mt-4 text-center">
-            <p className="text-2xl font-semibold">
-              {userData?.data.name || "User Name"}
-            </p>
-            <p className="text-gray-500">{userData?.data.email || "user@example.com"}</p>
+    <div className="bg-gray-100 shadow-md p-8 rounded-lg w-full max-w-xl mx-auto mt-10">
+      <div className="flex flex-col md:flex-row items-center justify-between">
+        <div className="flex flex-col items-center md:flex-row">
+          <motion.div
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.3 }}
+            className="w-32 h-32 rounded-full overflow-hidden border-4 border-indigo-600"
+          >
+            <Avatar className="w-full h-full">
+              <AvatarImage
+                src={userData?.data?.profilePhoto || ""}
+                alt="User Avatar"
+                className="object-cover w-full h-full"
+              />
+              <AvatarFallback className="bg-indigo-600 text-white text-2xl">
+                {avatarFallback}
+              </AvatarFallback>
+            </Avatar>
+          </motion.div>
+          <div className="ml-0 md:ml-6 mt-4 md:mt-0 text-center md:text-left">
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="text-2xl font-bold text-gray-800"
+            >
+              {userData?.data?.name || "User Name"}
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-gray-600"
+            >
+              {userData?.data?.email || "user@example.com"}
+            </motion.p>
           </div>
         </div>
 
-        <div className="flex flex-col items-center gap-4 w-full">
-          <div className="flex gap-4 w-full justify-center">
-            <div className="text-center">
-              <p className="text-lg font-semibold">{userData?.data.followers?.length}</p>
-              <p className="text-gray-500">Followers</p>
-            </div>
-            <div className="text-center">
-              <p className="text-lg font-semibold">{userData?.data.following?.length}</p>
-              <p className="text-gray-500">Following</p>
-            </div>
+        <div className="flex mt-6 md:mt-0 gap-6">
+          <div className="text-center">
+            <p className="text-lg font-semibold text-gray-800">{userData?.data?.followers?.length}</p>
+            <p className="text-gray-500">Followers</p>
           </div>
+          <div className="text-center">
+            <p className="text-lg font-semibold text-gray-800">{userData?.data?.following?.length}</p>
+            <p className="text-gray-500">Following</p>
+          </div>
+        </div>
+      </div>
 
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-sky-500 text-white px-6 py-2 rounded-full shadow hover:bg-sky-600">
-                Edit Profile
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-lg bg-white p-6 rounded-xl shadow-lg">
-              <DialogHeader>
-                <DialogTitle className="text-2xl font-semibold">
-                  Edit Profile
-                </DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div className="flex justify-center">
-                  <Image
-                    src={imagePreview || userData?.data.profilePhoto || ""}
-                    width={124}
-                    height={124}
-                    alt="Image Preview"
-                    className="w-32 h-32 rounded-full border mt-2 cursor-pointer"
-                    onClick={() => document.getElementById("fileInput")?.click()}
-                  />
-                </div>
+      <div className="mt-8 text-center">
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2 rounded-full">Edit Profile</Button>
+          </DialogTrigger>
+          <DialogContent className="bg-white rounded-lg shadow-lg p-6">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold">Edit Profile</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6">
+              <div className="flex flex-col items-center">
+                <Image
+                  src={imagePreview || userData?.data?.profilePhoto || ""}
+                  width={120}
+                  height={120}
+                  alt="Image Preview"
+                  className="w-40 h-40 rounded-full border-4 cursor-pointer border-indigo-500"
+                  onClick={() => document.getElementById("fileInput")?.click()}
+                />
                 <input
                   type="file"
                   accept="image/*"
@@ -179,44 +194,35 @@ const ProfileCard = () => {
                   id="fileInput"
                   className="hidden"
                 />
-
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-600">
-                    Name
-                  </label>
-                  <Input
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Enter your name"
-                    className="mt-2"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-600">
-                    Email
-                  </label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    className="mt-2"
-                  />
-                </div>
               </div>
-              <div className="mt-4 flex justify-end">
-                <Button onClick={handleSave} className="bg-sky-500 text-white px-6 py-2 rounded-full shadow hover:bg-sky-600">
-                  Update Profile
-                </Button>
+
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+                <Input
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Enter your name"
+                />
               </div>
-            </DialogContent>
-          </Dialog>
-        </div>
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email"
+                />
+              </div>
+            </div>
+            <div className="mt-6 flex justify-end">
+              <Button onClick={handleSave} className="bg-indigo-600 text-white">Update Profile</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
-    </>
+    </div>
   );
 };
 

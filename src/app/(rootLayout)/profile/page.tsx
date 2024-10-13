@@ -1,7 +1,9 @@
 "use client";
 import ProfileCard from "@/app/(rootLayout)/profile/components/profile/profileCard";
 import { useState } from "react";
-import { ProfilePost } from "./components/posts/profile-post";
+import { Following } from "./components/following/following";
+import { UserPost } from "./components/user-post/user-post";
+import { Followers } from "./components/followers/followers"
 
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("posts");
@@ -35,7 +37,9 @@ const ProfilePage = () => {
           </button>
         ))}
       </div>
-      {activeTab === 'posts' && <ProfilePost />}
+      {activeTab === 'posts' && <UserPost />}
+      {activeTab === 'followers' && <Followers />}
+      {activeTab === 'following' && <Following />}
     </div>
   );
 };

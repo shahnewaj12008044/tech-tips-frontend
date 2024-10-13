@@ -215,20 +215,20 @@ const PostCard = () => {
                         <div className="flex space-x-4 mx-auto">
                           {/* Social Share Buttons */}
                           <FacebookShareButton
-                            url={`https://yourwebsite.com/posts/${post?._id}`}
+                            url={`https://tech-tips-frontend.vercel.app/post-details/${post?._id}`}
                           >
                             <FacebookIcon size={40} round />
                           </FacebookShareButton>
 
                           <TwitterShareButton
-                            url={`https://yourwebsite.com/posts/${post?._id}`}
+                            url={`https://tech-tips-frontend.vercel.app/post-details/${post?._id}`}
                             title={post?.title}
                           >
                             <TwitterIcon size={40} round />
                           </TwitterShareButton>
 
                           <LinkedinShareButton
-                            url={`https://yourwebsite.com/posts/${post?._id}`}
+                            url={`https://tech-tips-frontend.vercel.app/post-details/${post?._id}`}
                             title={post?.title}
                             summary={post?.content}
                             source="YourWebsite"
@@ -237,7 +237,7 @@ const PostCard = () => {
                           </LinkedinShareButton>
 
                           <WhatsappShareButton
-                            url={`https://yourwebsite.com/posts/${post?._id}`}
+                            url={`https://tech-tips-frontend.vercel.app/post-details/${post?._id}`}
                             title={post?.title}
                             separator=":: "
                           >
